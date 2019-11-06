@@ -23,7 +23,7 @@ namespace Hangman
             String [] Possible_words=File.ReadAllLines("Slo-Words.txt");
             Random random = new Random();
             int RandomIndex = random.Next(Possible_words.Length);
-            Passcode = Possible_words[RandomIndex];
+            Passcode = Possible_words[RandomIndex].ToLower();
             for (int i = 0; i < Passcode.Length; i++)
             {
                 code += "*";
