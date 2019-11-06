@@ -12,21 +12,47 @@ namespace Hangman
         {
             bool run = true;
             GameMaster gm = new GameMaster();
+            SloGameMasterSolo sgms = new SloGameMasterSolo();
+            EngGameMasterSolo egms = new EngGameMasterSolo();
             Console.WriteLine("Hangman");
+            Console.Title = "Hangman";
             while (run == true)
             {
-                Console.Write("Skrita beseda...   ");
-                string Passcode = Console.ReadLine();
-                if (string.IsNullOrWhiteSpace(Passcode))
+                Console.Clear();
+                Console.Write("/help at anytime for help | Select mode...   ");
+                String mode = Console.ReadLine();
+                Console.Clear();
+                if (mode.Equals("/help"))
                 {
-                    Console.WriteLine("Invalid passcode!");
-                    continue;
+                    Console.WriteLine("There are two modes solo and 2players\n" +
+                        "Solo | the computer chooses the word and you guess\n" +
+                        "2players | 1st player chooses the word and the second guesses");
                 }
-                else 
+                else if (mode.Equals("solo"))
                 {
-                    gm.Passcode = Passcode.ToLower();
+                    lang:
+                    Console.Write("slovenian or english>");
+                    string lang = Console.ReadLine();
+                    if (lang.Equals("english"))
+                    {
+                        egms.StartGame();
+
+                    }
+                    else if (lang.Equals("slovenian"))
+                    {
+                        sgms.StartGame();
+                    }
+                    else 
+                    {
+                        Console.Clear();
+                        Console.WriteLine("Either you typed the language incorectly or it is not available");
+                        goto lang;
+                    }
                 }
-                gm.StartGame();
+                else if (mode.Equals("2players")) 
+                {
+                    gm.StartGame();
+                }
             }
 
         }

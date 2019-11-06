@@ -3,47 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace Hangman
 {
-    class GameMaster
+    class SloGameMasterSolo
     {
         Pictures pic = new Pictures();
         public bool quit = false;
         public string Passcode { get; set; }
-        int lives=11;
+        int lives = 11;
         string code;
         bool PasscodeGuessed = false;
         bool Reset = false;
         List<char> wrong_letters = new List<char>();
         List<char> used_letters = new List<char>();
-        public void StartGame() 
+        public void StartGame()
         {
-            Console.Write("Skrita beseda...   ");
-            string words = Console.ReadLine();
-            if (string.IsNullOrWhiteSpace(words))
-            {
-                Console.WriteLine("Invalid passcode!");
-                StartGame();
-            }else if (words.Equals("/help"))
-            {
-                Console.Clear();
-                Console.WriteLine();
-                Console.WriteLine("/quit to exit");
-                
-                Console.WriteLine();
-                StartGame();
-            }else if (words.Equals("/quit"))
-            {
-                quit = true;
-                GameEnd();
-                return;
-            }
-            else
-            {
-                Passcode = words.ToLower();
-            }
-            Passcode =Passcode.Trim();
+            String [] Possible_words=File.ReadAllLines("Slo-Words.txt");
+            Random random = new Random();
+            int RandomIndex = random.Next(Possible_words.Length);
+            Passcode = Possible_words[RandomIndex];
             for (int i = 0; i < Passcode.Length; i++)
             {
                 code += "*";
@@ -61,23 +41,23 @@ namespace Hangman
             Console.Clear();
             Console.WriteLine();
             Game();
-            
+
         }
-        public void Game() 
+        public void Game()
         {
-            while (PasscodeGuessed == false && lives > 0 && Reset==false)
+            while (PasscodeGuessed == false && lives > 0 && Reset == false)
             {
                 Stats();
                 Console.Write("your guess>");
                 string your_guesss = Console.ReadLine().ToLower();
-                
-                if (your_guesss.Equals("")) 
+
+                if (your_guesss.Equals(""))
                 {
                     Console.Clear();
                     Console.WriteLine();
                     continue;
                 }
-                if (your_guesss.Equals("/help")) 
+                if (your_guesss.Equals("/help"))
                 {
                     Console.WriteLine("/quit to exit\n/reset to reset");
                     Console.WriteLine("press enter to continue...");
@@ -86,17 +66,17 @@ namespace Hangman
                     Console.WriteLine();
                     continue;
                 }
-                if (your_guesss.Equals("/reset")) 
+                if (your_guesss.Equals("/reset"))
                 {
                     Reset = true;
                     break;
                 }
-                if (your_guesss.Equals("/quit")) 
+                if (your_guesss.Equals("/quit"))
                 {
                     quit = true;
                     break;
                 }
-                
+
                 if (your_guesss.Length > 1)
                 {
                     if (your_guesss.Equals(Passcode))
@@ -104,14 +84,14 @@ namespace Hangman
                         PasscodeGuessed = true;
                         break;
                     }
-                    else 
+                    else
                     {
                         lives = 0;
                         break;
                     }
                 }
-                char your_guess=Convert.ToChar(your_guesss);
-                if (used_letters.Contains(your_guess)) 
+                char your_guess = Convert.ToChar(your_guesss);
+                if (used_letters.Contains(your_guess))
                 {
                     Console.Clear();
                     Console.WriteLine();
@@ -128,10 +108,10 @@ namespace Hangman
                     if (pc[i] == your_guess)
                     {
                         index.Add(i);
-                        
+
                         found = true;
-                        
-                    }  
+
+                    }
                 }
                 if (found == true)
                 {
@@ -141,7 +121,7 @@ namespace Hangman
                     }
                     index.Clear();
                 }
-                else 
+                else
                 {
                     wrong_letters.Add(your_guess);
                 }
@@ -161,7 +141,7 @@ namespace Hangman
             Console.WriteLine();
             GameEnd();
         }
-        public void Stats() 
+        public void Stats()
         {
             Console.WriteLine($"{code}     | {Passcode.Length} letters");
             if (lives <= 5 && lives > 3)
@@ -176,7 +156,7 @@ namespace Hangman
             {
                 Console.ForegroundColor = ConsoleColor.DarkRed;
             }
-            switch (lives) 
+            switch (lives)
             {
                 case 10:
                     Console.WriteLine(pic.p10);
@@ -217,40 +197,55 @@ namespace Hangman
             wrong_letters.ForEach(Console.Write);
             Console.WriteLine("\n------------------------");
         }
-        public void GameEnd() 
+        public void GameEnd()
         {
             Console.ForegroundColor = ConsoleColor.DarkRed;
-            if (lives == 0&& PasscodeGuessed==false)
+            if (lives == 0 && PasscodeGuessed == false)
             {
                 Console.WriteLine($"You Lose.\n{pic.p0}\nThe passcode was {Passcode}");
             }
             Console.ResetColor();
-            if (PasscodeGuessed == true) 
+            if (PasscodeGuessed == true)
             {
                 Console.WriteLine("You win");
             }
-            if (PasscodeGuessed == true && lives == 0) 
+            if (PasscodeGuessed == true && lives == 0)
             {
                 Console.WriteLine("Impossible");
             }
-            if (Reset==true) 
+            if (Reset == true)
             {
                 Console.WriteLine($"Force reset triggered. The word was {Passcode}");
             }
-            code = "";
-            lives = 11;
-            PasscodeGuessed = false;
-            Reset = false;
-            wrong_letters.Clear();
-            used_letters.Clear();
-            if (quit == false)
+            
+            if (quit == true) 
             {
+                quit = false;
+                code = "";
+                lives = 11;
+                PasscodeGuessed = false;
+                Reset = false;
+                wrong_letters.Clear();
+                used_letters.Clear();
+                return;
+            }
+            Console.WriteLine("Do you want to go again? <yes|no>");
+            String answer=Console.ReadLine();
+            if (answer.Equals("yes"))
+            {
+                code = "";
+                lives = 11;
+                PasscodeGuessed = false;
+                Reset = false;
+                wrong_letters.Clear();
+                used_letters.Clear();
                 StartGame();
             }
             else 
             {
-                quit = false;
+                quit = true;
             }
+            
         }
     }
 }
