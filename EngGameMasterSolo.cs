@@ -12,7 +12,7 @@ namespace Hangman
         Pictures pic = new Pictures();
         public bool quit = false;
         public string Passcode { get; set; }
-        int lives = 11;
+        int lives = 10;
         string code;
         bool PasscodeGuessed = false;
         bool Reset = false;
@@ -156,53 +156,19 @@ namespace Hangman
             {
                 Console.ForegroundColor = ConsoleColor.DarkRed;
             }
-            switch (lives)
-            {
-                case 10:
-                    Console.WriteLine(pic.p10);
-                    break;
-                case 9:
-                    Console.WriteLine(pic.p9);
-                    break;
-                case 8:
-                    Console.WriteLine(pic.p8);
-                    break;
-                case 7:
-                    Console.WriteLine(pic.p7);
-                    break;
-                case 6:
-                    Console.WriteLine(pic.p6);
-                    break;
-                case 5:
-                    Console.WriteLine(pic.p5);
-                    break;
-                case 4:
-                    Console.WriteLine(pic.p4);
-                    break;
-                case 3:
-                    Console.WriteLine(pic.p3);
-                    break;
-                case 2:
-                    Console.WriteLine(pic.p2);
-                    break;
-                case 1:
-                    Console.WriteLine(pic.p1);
-                    break;
-                default:
-                    Console.WriteLine();
-                    break;
-            }
+            Console.WriteLine(pic.Image[lives]);
             Console.ResetColor();
             Console.Write("incorect letters: ");
             wrong_letters.ForEach(Console.Write);
             Console.WriteLine("\n------------------------");
         }
+
         public void GameEnd()
         {
             Console.ForegroundColor = ConsoleColor.DarkRed;
             if (lives == 0 && PasscodeGuessed == false)
             {
-                Console.WriteLine($"You Lose.\n{pic.p0}\nThe passcode was {Passcode}");
+                Console.WriteLine($"You Lose.\n{pic.Image[lives]}\nThe passcode was {Passcode}");
             }
             Console.ResetColor();
             if (PasscodeGuessed == true)
@@ -217,12 +183,11 @@ namespace Hangman
             {
                 Console.WriteLine($"Force reset triggered. The word was {Passcode}");
             }
-
             if (quit == true)
             {
                 quit = false;
                 code = "";
-                lives = 11;
+                lives = 10;
                 PasscodeGuessed = false;
                 Reset = false;
                 wrong_letters.Clear();
